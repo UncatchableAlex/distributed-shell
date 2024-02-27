@@ -49,6 +49,10 @@ int main(int argc, char *argv[]) {
 			foreground = FALSE;
 			cmdline[strlen(cmdline) - 1] = '\0'; // get rid of the ampersand
 		}
+		// trim the cmdline again to remove any whitespace:
+		ptr = cmdline;
+		cmdline = trim(cmdline);
+		free(ptr);
 		// tokenize the input
 		char **cmdArr = split(cmdline, " ");
 		// if the user entered pwd and wants to see the current working directory:
@@ -82,18 +86,18 @@ int main(int argc, char *argv[]) {
 		else {
 			char *fullPath;
 			// If the first character is a slash, then we are being given an absolute path and no resolving is needed:
-			if (cmdline[0] == '/') {
+			if (cmdArr[0][0] == '/' && !access(cmdArr[0], F_OK | X_OK)) {
 				fullPath = cmdArr[0];
 			} 
 			// otherwise resolve the full path of the the program to run
-			else {
+			else if (cmdArr[0][0] != '/') {
 				fullPath = getFullPath(cmdArr[0]);
 				free(cmdArr[0]);
 				cmdArr[0] = fullPath;
 			}
 			// if we couldn't find the path to run, complain:
 			if (!fullPath) {
-				printf("Error: %s not found\n", cmdline);
+				printf("Error: %s not found\n", cmdArr[0]);
 			}
 			// if we were able to find the path, run it
 			else {

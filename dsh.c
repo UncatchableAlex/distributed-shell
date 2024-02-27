@@ -64,15 +64,12 @@ char *getFullPath(char *shortPath) {
     while (dirs[i]) {
         fullPathMaybe = (char*)malloc((shortPathLen + strlen(dirs[i]) + 2) * sizeof(char));
         sprintf(fullPathMaybe, "%s/%s", dirs[i], shortPath);
-     //   printf("trying |%s|", fullPathMaybe);
         if (!fullPath && access(fullPathMaybe, F_OK | X_OK) == 0) {
-      //      printf(" success");
             deepFree2d((void**)dirs);
             return fullPathMaybe;
         } else {
             free(fullPathMaybe);
         }
-    //    printf("\n");
         i++;
     }
     deepFree2d((void**)dirs);
@@ -118,7 +115,6 @@ void deepFree2d(void **arr) {
 */
 char **split(char *str, char *delimiter) {
     if (!str || !delimiter || !strlen(str)) {
-        printf("returning null\n");
         return NULL;
     }
     int len = strlen(str);
